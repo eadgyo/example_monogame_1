@@ -55,8 +55,8 @@ namespace Game2
             Effect basicEffect = new BasicEffect(GraphicsDevice);
             Effect effect = Content.Load<Effect>("SimpleEffect");
 
-            cube = new Cube(GraphicsDevice, effect, null);
-            cube2 = new Cube(GraphicsDevice, effect, null);
+            cube = new Cube(GraphicsDevice, basicEffect, null);
+            cube2 = new Cube(GraphicsDevice, basicEffect, null);
 
             lastMouseState = Mouse.GetState();
         }
@@ -87,7 +87,12 @@ namespace Game2
 
             GraphicsDevice.SetVertexBuffer(cube.vertexBuffer);
             GraphicsDevice.Indices = cube.indexBuffer;
-            cube.cubeEffect.Parameters["gWVP"].SetValue(gWVP);
+            //cube.cubeEffect.Parameters["gWVP"].SetValue(gWVP);
+            BasicEffect basicEffect = (BasicEffect) cube.cubeEffect;
+            basicEffect.World = Matrix.Identity;
+            basicEffect.View = camera.View;
+            basicEffect.Projection = camera.Projection;
+            basicEffect.DiffuseColor = Color.White.ToVector3();
 
             GraphicsDevice.RasterizerState = new RasterizerState { CullMode = CullMode.CullClockwiseFace };
 
@@ -100,8 +105,12 @@ namespace Game2
 
             GraphicsDevice.SetVertexBuffer(cube2.vertexBuffer);
             GraphicsDevice.Indices = cube2.indexBuffer;
-            cube2.cubeEffect.Parameters["gWVP"].SetValue(posMatrix * gWVP);
-
+            //cube2.cubeEffect.Parameters["gWVP"].SetValue(posMatrix * gWVP);
+            BasicEffect basicEffect2 = (BasicEffect)cube2.cubeEffect;
+            basicEffect2.World = posMatrix;
+            basicEffect2.View = camera.View;
+            basicEffect2.Projection = camera.Projection;
+            basicEffect2.DiffuseColor = Color.Black.ToVector3();
             foreach (var pass in cube2.cubeEffect.CurrentTechnique.Passes)
             {
                 pass.Apply();
